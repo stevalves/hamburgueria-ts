@@ -15,13 +15,16 @@ interface iProductsValues {
 
 interface iHambResponses {
     GetProducts: any,
-    products: iProductsValues[]
+    products: iProductsValues[];
+    setCart: React.Dispatch<React.SetStateAction<iProductsValues[]>>;
+    cart: iProductsValues[];
 }
 
 export const HambContext = createContext({} as iHambResponses);
 
 export function HambProvider({ children }: iHProviderProps) {
   const [products, setProducts] = useState([] as iProductsValues[]);
+  const [cart, setCart] = useState([] as iProductsValues[])
 
   async function GetProducts() {
     const token = localStorage.getItem("@TOKEN");
@@ -42,7 +45,7 @@ export function HambProvider({ children }: iHProviderProps) {
   }, [])
 
   return (
-    <HambContext.Provider value={{ GetProducts, products }}>
+    <HambContext.Provider value={{ GetProducts, products, cart, setCart }}>
         {children}
     </HambContext.Provider>
   )

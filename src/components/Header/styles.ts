@@ -48,7 +48,7 @@ export const StHeader = styled.header`
 
   svg:hover {
     color: var(--color-primary);
-    transition: .2s;
+    transition: .5s;
   }
   button {
     margin-left: 2ch;

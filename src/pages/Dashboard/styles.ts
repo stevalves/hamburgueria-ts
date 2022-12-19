@@ -9,7 +9,7 @@ export const StDash = styled.div`
     margin-top: 1rem;
   }
 
-  ul {
+  main>ul {
     display: flex;
     overflow-x: auto;
 

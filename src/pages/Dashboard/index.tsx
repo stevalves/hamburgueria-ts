@@ -1,26 +1,60 @@
-import { useContext, useEffect } from "react";
-import { api } from "../../api/request";
+import { useContext, useState } from "react";
 import Header from "../../components/Header";
 import { Card } from "../../components/ProductCard";
 import { HambContext } from "../../contexts/HambContext";
-import { UserContext } from "../../contexts/UserContexts";
+import { Modal } from "../../styles/StModal";
 import { StDash } from "./styles";
+import { AiOutlineClose } from "react-icons/ai";
+import { CartCard } from "../../components/CartProductCard";
 
 export function Dashboard() {
-  const { user } = useContext(UserContext);
-  const { products } = useContext(HambContext);
-
-  console.log(products.length);
+  const [modal, setModal] = useState(false);
+  const { products, cart, setCart } = useContext(HambContext);
+  const [render, setRender] = useState(products)
+  const TotalValueCart = cart.reduce((a, b) => {
+    return a + b.price
+  }, 0)
 
   return (
     <StDash>
-      <Header />
+      <Modal open={modal}>
+        <div className="modalContent">
+          <div className="modalHeader">
+            <h2>Carrinho de compras</h2>
+            <button onClick={() => setModal(false)}>
+              <AiOutlineClose />
+            </button>
+          </div>
+          <div className="modalBody">
+            <ul>
+              {cart.length > 0 ? cart.map((value) => (
+                <CartCard
+                  category={value.category}
+                  id={value.id}
+                  img={value.img}
+                  name={value.name}
+                  price={value.price}
+                  key={value.id}
+                />
+              )) : <span>Lista vazia</span>}
+            </ul>
+            <hr />
+            <div className="totalAmount">
+              <h4>Total</h4>
+              <h5>R$ {TotalValueCart.toFixed(2)}</h5>
+            </div>
+            <button type="button" onClick={() => setCart([])}>Remover todos</button>
+          </div>
+        </div>
+      </Modal>
+      <Header openModal={setModal} setRender={setRender} products={products}/>
       <main>
         <ul>
-          {products.length > 1 ? (
-            products.map((value) => (
+          {render.length > 0 ? (
+            render.map((value) => (
               <Card
                 key={value.id}
+                id={value.id}
                 name={value.name}
                 type={value.category}
                 img={value.img}

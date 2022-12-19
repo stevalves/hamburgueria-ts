@@ -29,6 +29,7 @@ interface iUserChanges {
         id: number;
       }
     | {};
+  logout: () => void,
 }
 
 interface iUser {
@@ -94,8 +95,14 @@ export function UserProvider({ children }: iUserProviderProps) {
     }
   }
 
+  function logout(){
+    localStorage.clear();
+    setUser(null);
+    navigate("/");
+  }
+
   return (
-    <UserContext.Provider value={{ UserLogin, UserRegister, user, AutoLogin }}>
+    <UserContext.Provider value={{ UserLogin, UserRegister, user, AutoLogin, logout }}>
       {children}
     </UserContext.Provider>
   );
