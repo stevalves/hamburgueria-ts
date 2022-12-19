@@ -1,3 +1,4 @@
+import { HambProvider } from "./contexts/HambContext";
 import { UserProvider } from "./contexts/UserContexts";
 import { RoutesList } from "./routes/RoutesList";
 import GlobalStyles from "./styles/GlobalStyles";
@@ -8,7 +9,9 @@ function App() {
       <>
         <GlobalStyles />
         <UserProvider>
-          <RoutesList />
+          <HambProvider>
+            <RoutesList />
+          </HambProvider>
         </UserProvider>
       </>
     </div>

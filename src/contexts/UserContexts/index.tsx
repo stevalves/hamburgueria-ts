@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { api } from "../../api/request";
@@ -12,11 +12,33 @@ import {
 export const UserContext = createContext({} as iUserChanges);
 
 interface iUserChanges {
-  UserLogin: any;
-  UserRegister: any;
+  AutoLogin:
+    | {
+        email: string;
+        password: string;
+        name: string;
+        id: number;
+      }
+    | any;
+  UserLogin: iUserLoginData | any;
+  UserRegister: iUserRegisterData | any;
+  user:
+    | {
+        email: string;
+        name: string;
+        id: number;
+      }
+    | {};
+}
+
+interface iUser {
+  email: string;
+  name: string;
+  id: number;
 }
 
 export function UserProvider({ children }: iUserProviderProps) {
+  const [user, setUser] = useState({} as iUser | any);
   const navigate = useNavigate();
 
   async function UserLogin(data: iUserLoginData) {
@@ -25,6 +47,8 @@ export function UserProvider({ children }: iUserProviderProps) {
       if (response.statusText === "OK") {
         toast.success("Login feito com sucesso!");
         localStorage.setItem("@TOKEN", response.data.accessToken);
+        localStorage.setItem("@USERID", response.data.user.id + "");
+        setUser(response.data.user);
         navigate("/home");
       }
     } catch (error) {
@@ -47,8 +71,31 @@ export function UserProvider({ children }: iUserProviderProps) {
       toast.error("Algo deu errado!");
     }
   }
+
+  async function AutoLogin() {
+    const token = localStorage.getItem("@TOKEN");
+    const userid = localStorage.getItem("@USERID");
+    if (token) {
+      try {
+        const response = await api.get(`users/${userid}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.statusText === "OK") {
+          setUser(response.data);
+          navigate("/home");
+        } else {
+          navigate("/");
+        }
+      } catch (error) {
+        toast.error("Sem permissão!");
+      }
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ UserLogin, UserRegister }}>
+    <UserContext.Provider value={{ UserLogin, UserRegister, user, AutoLogin }}>
       {children}
     </UserContext.Provider>
   );

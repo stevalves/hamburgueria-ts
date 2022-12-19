@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Form } from "../../components/Form";
@@ -7,22 +7,38 @@ import { Input } from "../../components/Input";
 import { LogAndRegHeader } from "../../components/LogAndRegHeader";
 import { UserContext } from "../../contexts/UserContexts";
 import { StLoginPage } from "./styles";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import { yupResolver } from "@hookform/resolvers/yup";
+import loginSchema from "./loginSchema";
+import { StErrorMessage } from "../../styles/ErrorMessage";
 
 export function LoginPage() {
-  const { UserLogin } = useContext(UserContext);
+  const { UserLogin, AutoLogin } = useContext(UserContext);
+  AutoLogin()
 
-  const { register, handleSubmit } = useForm({});
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+    mode: "onChange",
+  });
 
-  async function submit(data: {}) {
-    await UserLogin(data);
+  interface iLoginData {
+    email: string;
+    password: string;
   }
+
+  const submit: SubmitHandler<any> = async (data: iLoginData) => {
+    await UserLogin(data);
+  };
 
   return (
     <StLoginPage>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -48,7 +64,10 @@ export function LoginPage() {
           type="password"
           {...register("password")}
         />
-        <button className="primaryButton" type="submit">Logar</button>
+        {errors.password && <StErrorMessage>Insira uma senha</StErrorMessage>}
+        <button className="primaryButton" type="submit">
+          Logar
+        </button>
         <p>Crie sua conta para saborear muitas delícias e matar sua fome!</p>
         <Link to="register" className="greyButton">
           Cadastrar

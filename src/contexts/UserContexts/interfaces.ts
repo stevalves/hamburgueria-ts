@@ -4,7 +4,11 @@ export interface iUserProviderProps {
 
 export interface iUserResponse {
   accessToken: string;
-  user: iUserLoginData;
+  user: {
+    name: string;
+    email: string;
+    id: number;
+  };
 }
 
 export interface iUserLoginData {

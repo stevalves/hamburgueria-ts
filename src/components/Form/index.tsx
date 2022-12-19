@@ -4,7 +4,7 @@ import { StForm } from "./styles";
 
 interface iFormValues {
   title: string;
-  children: React.ReactNode;
+  children: React.ReactNode | any
   goBack?: boolean;
   goLogin?: React.FormEventHandler<HTMLFormElement> | undefined;
 }
