@@ -29,7 +29,7 @@ interface iUserChanges {
         id: number;
       }
     | {};
-  logout: () => void,
+  logout: () => void;
 }
 
 interface iUser {
@@ -76,33 +76,31 @@ export function UserProvider({ children }: iUserProviderProps) {
   async function AutoLogin() {
     const token = localStorage.getItem("@TOKEN");
     const userid = localStorage.getItem("@USERID");
-    if (token) {
-      try {
-        const response = await api.get(`users/${userid}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.statusText === "OK") {
-          setUser(response.data);
-          navigate("/home");
-        } else {
-          navigate("/");
-        }
-      } catch (error) {
-        toast.error("Sem permissão!");
+    if (token && userid) {
+      const response = await api.get(`users/${userid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.statusText === "OK") {
+        setUser(response.data);
+        return true;
+      } else {
+        return false;
       }
     }
   }
 
-  function logout(){
+  function logout() {
     localStorage.clear();
     setUser(null);
     navigate("/");
   }
 
   return (
-    <UserContext.Provider value={{ UserLogin, UserRegister, user, AutoLogin, logout }}>
+    <UserContext.Provider
+      value={{ UserLogin, UserRegister, user, AutoLogin, logout }}
+    >
       {children}
     </UserContext.Provider>
   );

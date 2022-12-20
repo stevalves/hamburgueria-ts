@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { HambContext } from "../../contexts/HambContext";
 import { StCartCard } from "./styles";
@@ -11,16 +11,33 @@ interface iCartCardProps {
   img: string;
 }
 
-export function CartCard({ id, name, category, price, img }: iCartCardProps) {
+export function CartCard({
+  id,
+  name,
+  category,
+  price,
+  img,
+}: iCartCardProps) {
+  const { cart, setCart } = useContext(HambContext);
+  const [quant, setQuant] = useState(1);
 
-    const {cart, setCart} = useContext(HambContext)
-
-    function remove() {
-        const newList = [...cart]
-        const index = newList.findIndex((value) => value.id === id)
-        newList.splice(index, 1)
-        setCart(newList)
+  function refreshPriceAdd() {
+    if (quant >= 1) {
+      setQuant(quant + 1)
     }
+  }
+  function refreshPriceRemove() {
+    if (quant > 1) {
+      setQuant(quant - 1)
+    }
+  }
+
+  function remove() {
+    const newList = [...cart];
+    const index = newList.findIndex((value) => value.id === id);
+    newList.splice(index, 1);
+    setCart(newList);
+  }
 
   return (
     <StCartCard>
@@ -31,9 +48,9 @@ export function CartCard({ id, name, category, price, img }: iCartCardProps) {
         <div className="prodName">
           <h2>{name}</h2>
           <div className="addRem">
-            <button>-</button>
-            <h5>1</h5>
-            <button>+</button>
+            <button onClick={refreshPriceRemove}>-</button>
+            <h5>{quant}</h5>
+            <button onClick={refreshPriceAdd}>+</button>
           </div>
         </div>
       </div>

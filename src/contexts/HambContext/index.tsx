@@ -36,7 +36,6 @@ export function HambProvider({ children }: iHProviderProps) {
       });
       setProducts(response.data)
     } catch (error) {
-        console.error(error)
     }
   }
 

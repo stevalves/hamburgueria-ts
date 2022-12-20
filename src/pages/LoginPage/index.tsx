@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Form } from "../../components/Form";
 import { Input } from "../../components/Input";
@@ -14,7 +14,14 @@ import { StErrorMessage } from "../../styles/ErrorMessage";
 
 export function LoginPage() {
   const { UserLogin, AutoLogin } = useContext(UserContext);
-  AutoLogin()
+  const navigate = useNavigate()
+  async function auth() {
+    const is = await AutoLogin()
+    if(is) {
+      navigate("/home")
+    }
+  }
+  auth()
 
   const {
     register,

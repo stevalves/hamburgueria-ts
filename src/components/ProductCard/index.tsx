@@ -18,11 +18,12 @@ export function Card({ name, type, price, img, id }: iCardProps) {
       name: name,
       category: type,
       img: img,
-      id: cart.length+1,
+      id: cart.length + 1,
       price: price,
     };
-    if(!cart.find((value) => value.id === id)){
-        setCart([...cart, newValue])
+    console.log(cart, newValue.id);
+    if (!cart.find((value) => value.name === name)) {
+      setCart([...cart, newValue]);
     }
   }
 
