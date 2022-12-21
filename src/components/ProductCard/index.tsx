@@ -1,5 +1,8 @@
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { HambContext } from "../../contexts/HambContext";
+import { UserContext } from "../../contexts/UserContexts";
 import { StCard } from "./styles";
 
 interface iCardProps {
@@ -12,18 +15,25 @@ interface iCardProps {
 
 export function Card({ name, type, price, img, id }: iCardProps) {
   const { setCart, cart } = useContext(HambContext);
+  const { AutoLogin } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  function addToCart() {
-    const newValue = {
-      name: name,
-      category: type,
-      img: img,
-      id: cart.length + 1,
-      price: price,
-    };
-    console.log(cart, newValue.id);
-    if (!cart.find((value) => value.name === name)) {
-      setCart([...cart, newValue]);
+  async function addToCart() {
+    if (await AutoLogin()) {
+      const newValue = {
+        name: name,
+        category: type,
+        img: img,
+        id: cart.length + 1,
+        price: price,
+      };
+      console.log(cart, newValue.id);
+      if (!cart.find((value) => value.name === name)) {
+        setCart([...cart, newValue]);
+      }
+    } else {
+      toast.error("Sem permissão!");
+      navigate("/");
     }
   }
 
