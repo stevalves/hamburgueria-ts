@@ -9,6 +9,8 @@ interface iCartCardProps {
   category: string;
   price: number;
   img: string;
+  setSum: React.Dispatch<React.SetStateAction<number>>;
+  sum: number;
 }
 
 export function CartCard({
@@ -17,18 +19,24 @@ export function CartCard({
   category,
   price,
   img,
+  setSum,
+  sum,
 }: iCartCardProps) {
   const { cart, setCart } = useContext(HambContext);
   const [quant, setQuant] = useState(1);
 
-  function refreshPriceAdd() {
+  function priceAdd() {
     if (quant >= 1) {
       setQuant(quant + 1)
+      setSum(sum + price)
     }
   }
-  function refreshPriceRemove() {
+  function priceRemove() {
     if (quant > 1) {
       setQuant(quant - 1)
+      setSum(sum - price)
+    } else {
+      remove()
     }
   }
 
@@ -48,9 +56,9 @@ export function CartCard({
         <div className="prodName">
           <h2>{name}</h2>
           <div className="addRem">
-            <button onClick={refreshPriceRemove}>-</button>
+            <button onClick={priceRemove}>-</button>
             <h5>{quant}</h5>
-            <button onClick={refreshPriceAdd}>+</button>
+            <button onClick={priceAdd}>+</button>
           </div>
         </div>
       </div>

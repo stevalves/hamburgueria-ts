@@ -14,9 +14,10 @@ export function Dashboard() {
   const { products, cart, setCart } = useContext(HambContext);
   const { AutoLogin } = useContext(UserContext);
   const [render, setRender] = useState(products);
-  const TotalValueCart = cart.reduce((a, b) => {
+  const [sum, setSum] = useState(0)
+  let TotalValueCart = cart.reduce((a, b) => {
     return a + b.price;
-  }, 0);
+  }, sum);
 
   const navigate = useNavigate();
 
@@ -55,6 +56,8 @@ export function Dashboard() {
                     name={value.name}
                     price={value.price}
                     key={value.id}
+                    setSum={setSum}
+                    sum={sum}
                   />
                 ))
               ) : (
